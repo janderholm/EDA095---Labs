@@ -19,14 +19,14 @@ public class TimeServerUDP {
 		
 		while(true) {
 			socket.receive(dp);
-			String in = new String(buf,0,dp.getLength(),"UTF-8");
+			String in = new String(buf,0,dp.getLength());
 			Date date = new Date();
 			DateFormat df;
 			String s = "";
-			if("DATE?\n".equals(in)) {
+			if("DATE?".equals(in)) {
 				df = DateFormat.getDateInstance(DateFormat.LONG);
 				s = df.format(date) + "\n";
-			}else if("TIME?\n".equals(in)){
+			}else if("TIME?".equals(in)){
 				df = DateFormat.getTimeInstance(DateFormat.LONG);
 				s = df.format(date) + "\n";
 			}else{
