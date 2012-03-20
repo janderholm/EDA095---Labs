@@ -4,7 +4,6 @@ import java.net.*;
 public class MCAddressServer {
     public static void main(String args[]) throws IOException {
         MulticastSocket ms = new MulticastSocket(4099);
-        DatagramSocket ds = new DatagramSocket();	
         InetAddress ia = InetAddress.getByName("experiment.mcast.net");
         ms.joinGroup(ia);
 	
