@@ -32,7 +32,7 @@ public class TimeServerUDP {
 			}else{
 				s = "Unsupported\n";
 			}
-			socket.send(new DatagramPacket(s.getBytes(),0,s.getBytes().length, dp.getSocketAddress()));
+			socket.send(new DatagramPacket(s.getBytes(), 0, s.getBytes().length, dp.getSocketAddress()));
 		}
 	}
 }
