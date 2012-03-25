@@ -8,6 +8,7 @@ class Connection implements Runnable {
 		this.connection = connection;
 	}
 
+	@Override
 	public void run() {
 		try {
 			InputStream in = connection.getInputStream();
