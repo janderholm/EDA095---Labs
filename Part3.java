@@ -10,29 +10,36 @@ class BufferedMailbox implements Mailbox {
 
 	public static final int SIZE = 5;
 	private String[] buffer = new String[SIZE];
-	private int current = 0;
+	private int first = 0;
+	private int last = 0;
+	private int n = 0;
 
 	@Override
 	public synchronized String fetch() throws InterruptedException {
-		while(current == 0) {
+		while (n == 0) {
 			wait();
 		}
-		current--;
-		String msg = buffer[current];
-		buffer[current] = null;
+		String msg = buffer[first];
+		buffer[first] = null;
+
+		n -= 1;
+		first = (first + 1) % SIZE;
+
 		notifyAll();
-		
+
 		return msg;
 	}
 
 	@Override
 	public synchronized void store(String msg) throws InterruptedException {
-		while(current >= SIZE) {
+		while (n == SIZE) {
 			wait();
 		}
+		buffer[last] = msg;
 
-		buffer[current] = msg;
-		current++;
+		n += 1;
+		last = (last + 1) % SIZE;
+
 		notifyAll();
 	}
 }
