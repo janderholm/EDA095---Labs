@@ -34,7 +34,7 @@ public class EchoTCP1 {
 					byte[] tbuff = buff;
 					buffSize += bytesRead;
 					buff = new byte[buffSize];
-			        System.arraycopy(tbuff, 0, buff, 0, bytesRead);
+					System.arraycopy(tbuff, 0, buff, 0, bytesRead);
 				}
 		        //System.out.println(bytesRead);
 			}
@@ -43,10 +43,5 @@ public class EchoTCP1 {
 			out.flush();
 			connection.close();
 		}
-		
-		/*OutputStreamWriter out = new OutputStreamWriter(
-				connection.getOutputStream());
-		out.write("You've connected to this server. Bye-bye now.\r\n");*/
 	}
-
 }
