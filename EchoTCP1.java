@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 //The first four bytes are an int with the message lenght, not including the int itself 
+//the fith byte tells wheter to close or not. != 0 for close
+//[4b][1b][message]
 public class EchoTCP1 {
 
 	/**
@@ -14,7 +16,7 @@ public class EchoTCP1 {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		ServerSocket server = new ServerSocket(30001);
+		ServerSocket server = new ServerSocket(30002);
 		int buffSize = 4;
 		byte[] lenbuff = new byte[4];
 		byte[] buff;
@@ -25,8 +27,8 @@ public class EchoTCP1 {
 		InputStream inStream;
 		DataInput in;
 		
+		connection = server.accept();
 		while(true){
-			connection = server.accept();
 			System.out.println("Connection from: " + connection.getInetAddress().toString());
 			inStream = connection.getInputStream();
 			out = connection.getOutputStream();
@@ -36,6 +38,8 @@ public class EchoTCP1 {
 				if (result == -1) break;
 				bytesRead += result;
 			}
+			int close = inStream.read(); //last message?
+			System.out.println(close);
 			
 			int len = buffArrayToInt(lenbuff); //messange length
 			buff = new byte[len];
@@ -47,10 +51,17 @@ public class EchoTCP1 {
 				bytesRead += result;
 			}
 			
-			System.out.println(new String(buff));
-			out.write(buff,0,bytesRead);
+			String message = new String(buff);
+			System.out.println(message);
+			out.write(1);
 			out.flush();
-			connection.close();
+			
+			if(close != 0){
+				System.out.println("closed");
+				connection.close();
+				connection = server.accept();
+			}
+			
 		}
 	}
 	
