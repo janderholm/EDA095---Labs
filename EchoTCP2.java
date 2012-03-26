@@ -63,7 +63,7 @@ class Connection implements Runnable {
 					break;
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.err.println("Undefined behaviour, connection terminated");
 				break;
 			}
 		}
