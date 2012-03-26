@@ -17,39 +17,23 @@ public class EchoTCP1 {
 	 */
 	public static void main(String[] args) throws IOException {
 		ServerSocket server = new ServerSocket(30002);
-		int buffSize = 4;
 		byte[] lenbuff = new byte[4];
 		byte[] buff;
-		int bytesRead   = 0;
-		int result;
 		Socket connection;
 		OutputStream out = null;
 		InputStream inStream;
-		DataInput in;
 		
 		connection = server.accept();
 		while(true){
 			System.out.println("Connection from: " + connection.getInetAddress().toString());
 			inStream = connection.getInputStream();
 			out = connection.getOutputStream();
-			bytesRead=0;
-			while (bytesRead < 4) {
-				result = inStream.read(lenbuff, bytesRead, 4 - bytesRead);
-				if (result == -1) break;
-				bytesRead += result;
-			}
-			int close = inStream.read(); //last message?
-			System.out.println(close);
-			
+
+			read(inStream, lenbuff, 4);
 			int len = buffArrayToInt(lenbuff); //messange length
+			int close = inStream.read(); //last message?
 			buff = new byte[len];
-			System.out.println(len);
-			bytesRead = 0;
-			while (bytesRead < len) {
-				result = inStream.read(buff, bytesRead, len - bytesRead);
-				if (result == -1) break;
-				bytesRead += result;
-			}
+			read(inStream, buff, len);
 			
 			String message = new String(buff);
 			System.out.println(message);
@@ -62,6 +46,16 @@ public class EchoTCP1 {
 				connection = server.accept();
 			}
 			
+		}
+	}
+	
+	static void read(InputStream inStream, byte[] lenbuff, int bytesToRead) throws IOException {
+		int bytesRead=0;
+		int result = 0;
+		while (bytesRead < bytesToRead) {
+			result = inStream.read(lenbuff, bytesRead, bytesToRead - bytesRead);
+			if (result == -1) break;
+			bytesRead += result;
 		}
 	}
 	
