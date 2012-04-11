@@ -40,7 +40,7 @@ class Participant implements Runnable {
 		while (true) {
 			try {
 				msg = mailbox.take();
-				if (msg == "DIE") {
+				if (msg.equals("DIE")) {
 					try {
 						connection.close();
 					} catch (IOException e) {
