@@ -31,9 +31,15 @@ public class LinkGetter extends HTMLEditorKit.ParserCallback {
         //System.out.println("Start: " + tag + " Position: " + position);
         if (tag == HTML.Tag.A) {
             String href = (String) attributes.getAttribute(HTML.Attribute.HREF);
-            System.out.println("Extracted link: " + href);
+            //System.out.println("Extracted link: " + href);
             try {
-                System.out.println("\tAbsolute link: " + new URL(new URL(baseURI), href));
+               // System.out.println("\tAbsolute link: " + new URL(new URL(baseURI), href));
+            	URL url = new URL(new URL(baseURI), href);
+                if(url.toURI().isOpaque()){
+                	mon.addURN(url.toString());
+                }else{
+                	mon.AddRemainingURL(url.toString());
+                }
             } catch (Exception e) {
             }
         }
@@ -50,15 +56,15 @@ public class LinkGetter extends HTMLEditorKit.ParserCallback {
         if (tag == HTML.Tag.BASE) {
             String href = (String) attributes.getAttribute(HTML.Attribute.HREF);
             baseURI = href;
-            System.out.println("Base URL: " + href);
+            //System.out.println("Base URL: " + href);
         }
         if (tag == HTML.Tag.IMG) {
             String href = (String) attributes.getAttribute(HTML.Attribute.SRC);
-            System.out.println("Image: " + href);
+            //System.out.println("Image: " + href);
         }
         if (tag == HTML.Tag.FRAME) {
             String href = (String) attributes.getAttribute(HTML.Attribute.SRC);
-            System.out.println("Frame: " + href);
+            //System.out.println("Frame: " + href);
         }
     }
 
