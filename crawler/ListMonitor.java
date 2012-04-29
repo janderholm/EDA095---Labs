@@ -40,6 +40,34 @@ public class ListMonitor {
 	synchronized public int remainingSize() {
 		return remainingURLs.size();
 	}
+	
+	@SuppressWarnings("unchecked")
+	synchronized public Set<String>[] fetch() {
+		Set<String> tTraversed = new HashSet<String>();
+		Set<String> tRemaining =  new HashSet<String>();
+		tTraversed.addAll(url);
+		tRemaining.addAll(hashRemainingURLs);
+		return (Set<String>[]) (new Set[]{tTraversed,tRemaining});
+	}
+	
+	@SuppressWarnings("unchecked")
+	synchronized public Set<String>[] fetchAndSet(Set<String> traversed, Set<String> remaining) {
+		System.out.println("CHANGE");
+		Set<String> tTraversed = url;
+		Set<String> tRemaining = hashRemainingURLs;
+		long time = System.currentTimeMillis();
+		
+		url = traversed;
+		hashRemainingURLs = remaining;
+		remainingURLs = new LinkedList<String>();
+		remainingURLs.addAll(traversed);
+		double calc = (traversed.size()/(double)Settings.LIMIT)*100;
+		progress = (int) calc;
+		System.out.println(progress);
+		
+		System.out.println(System.currentTimeMillis() - time);
+		return (Set<String>[]) (new Set[]{tTraversed, tRemaining});
+	}
 
 	synchronized public void AddRemainingURL(String s) {
 		if (!url.contains(s) && !hashRemainingURLs.contains(s)) {
@@ -67,14 +95,14 @@ public class ListMonitor {
 		}
 		
 		if(progress*(Settings.LIMIT/100) < url.size()){
-			System.out.println(progress + "%");
+			System.out.println(progress + "%  " + url.size());
 			progress++;
 		}
 		
 		
 		String rurl = remainingURLs.pop();
 		hashRemainingURLs.remove(rurl);
-		url.add(rurl); 
+		url.add(rurl);
 		waitingThreads--;
 		return rurl;
 	}

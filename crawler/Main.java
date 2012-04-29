@@ -1,35 +1,35 @@
 package crawler;
 
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+
+import rmi.RemoteFunctions;
+import rmi.RemoteInterface;
+
 public class Main {
 	public static void main(String[] args) throws InterruptedException {
 		ListMonitor mon = new ListMonitor();
 		mon.AddRemainingURL(Settings.START_URL);
 		
-		long start = System.currentTimeMillis();
-		Thread th[] = new Thread[Settings.N_THREADS];
-		for(int i = 0; i < Settings.N_THREADS; i++){
-			th[i] = new Thread(new Crawler(mon));
-			th[i].start();
+		System.setProperty("java.rmi.server.codebase", 
+				RemoteInterface.class.getProtectionDomain().
+				getCodeSource().getLocation().toString());
+		
+		try {
+			RemoteFunctions obj = new RemoteFunctions(mon);
+			RemoteInterface stub = (RemoteInterface) UnicastRemoteObject
+					.exportObject(obj, 3000);
+
+			// Bind the remote object's stub in the registry
+			Registry registry = LocateRegistry.getRegistry(30000);
+			registry.bind("Remote", stub);
+
+			System.err.println("Server ready");
+		} catch (Exception e) {
+			System.err.println("Server exception: " + e.toString());
+			e.printStackTrace();
 		}
-		
-		for(int i = 0; i < Settings.N_THREADS; i++){
-			th[i].join();
-		}
-		
-		long time = (System.currentTimeMillis()-start)/1000;
-		
-		for(String s : mon.url){
-			System.out.println(s);
-		}
-		
-		for(String s : mon.urn){
-			System.out.println(s);
-		}
-		
-		System.out.println("urns: " + mon.urn.size());
-		System.out.println("urls: " + mon.url.size());
-		System.out.println("Remaining: " + mon.remainingURLs.size());
-		System.out.println("TIME: " + time);
-		
 	}
+
 }
