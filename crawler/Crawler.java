@@ -33,6 +33,8 @@ public class Crawler extends Thread{
 				break;
 			}
 			
+			mon.suspend();
+			
 			if(!startURL.substring(0, startURL.indexOf(':')).equals("http")){
 				continue;
 			}

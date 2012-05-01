@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+
 public class ListMonitor {
 	public Set<String> urn;
 	public Set<String> url;
@@ -11,8 +12,9 @@ public class ListMonitor {
 	public LinkedList<String> remainingURLs;
 	private int waitingThreads = 0;
 	private int progress = 0;
+	private boolean suspend = true;
 
-	public ListMonitor() {
+	public ListMonitor(Thread th) {
 		urn = new HashSet<String>();
 		url = new HashSet<String>();
 		remainingURLs = new LinkedList<String>();
@@ -73,9 +75,6 @@ public class ListMonitor {
 		if (!url.contains(s) && !hashRemainingURLs.contains(s)) {
 			remainingURLs.add(s);
 			hashRemainingURLs.add(s);
-			//System.out.println("urns: " + urn.size());
-			//System.out.println("urls: " + url.size());
-			//System.out.println("Remaining: " + remainingURLs.size());
 		}
 		notifyAll();
 	}
@@ -95,7 +94,7 @@ public class ListMonitor {
 		}
 		
 		if(progress*(Settings.LIMIT/100) < url.size()){
-			System.out.println(progress + "%  " + url.size());
+			System.out.print("\r"+progress + "%  " + url.size());
 			progress++;
 		}
 		
@@ -105,6 +104,27 @@ public class ListMonitor {
 		url.add(rurl);
 		waitingThreads--;
 		return rurl;
+	}
+	
+	synchronized public void suspendThreads() {
+		suspend = true;
+	}
+	
+	synchronized public void unSuspendThreads() {
+		suspend = false;
+		notifyAll();
+	}
+
+	synchronized public void suspend() {
+		while(suspend){
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 }

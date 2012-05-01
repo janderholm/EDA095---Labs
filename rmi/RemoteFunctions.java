@@ -3,6 +3,7 @@ package rmi;
 import java.rmi.RemoteException;
 import java.util.Set;
 
+
 import crawler.ListMonitor;
 import crawler.Starter;
 
@@ -14,13 +15,12 @@ public class RemoteFunctions implements RemoteInterface{
 	
 	@Override
 	public void suspend() throws RemoteException {
-		// TODO Auto-generated method stub
-		
+		mon.suspendThreads();
 	}
 
 	@Override
 	public void start() throws RemoteException {
-		new Thread(new Starter(mon)).start();
+		mon.unSuspendThreads();
 	}
 
 	@Override

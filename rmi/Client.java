@@ -26,7 +26,6 @@ public class Client {
     		lists = stub.fetch();
     		 System.out.println("urls: " + lists[0].size());
      		System.out.println("Remaining: " + lists[1].size());
-     		Thread.sleep(100000);
      		registry.unbind("Remote");
         } catch (Exception e) {
             System.err.println("Client exception: " + e.toString());
