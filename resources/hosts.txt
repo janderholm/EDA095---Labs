@@ -1,0 +1,2 @@
+Remote1 http://cs.lth.se/pierre_nugues/
+Remote2 http://cs.lth.se/EDA095/

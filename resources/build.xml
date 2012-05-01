@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project name="lab5" default="build" basedir=".">
+
+  <!-- Shared library dir -->
+  <property name="lib.dir" value="/usr/share/java"/>
+
+  <!-- Default is to include ants runtime, this we don't want. -->
+  <presetdef name="javac">
+    <javac includeantruntime="false"/>
+  </presetdef>
+
+  <!-- Make sure protobuf is available on classpath -->
+  <path id="classpath">
+  </path>
+
+  <target name="build">
+    <mkdir dir="bin"/>
+    <javac srcdir="src" destdir="bin" debug="false" includes="**/*.java" classpathref="classpath"/>
+  </target>
+
+  <target name="clean">
+    <delete dir="bin"/>
+    <delete dir="jar"/>
+  </target>
+
+  <target name="jar" depends="build">
+    <mkdir dir="jar"/>
+  	 <copy file="hosts.txt" todir="jar/"/>
+    <jar destfile="jar/Server.jar" basedir="bin">
+      <manifest>
+        <attribute name="Main-Class" value="rmi.Server"/>
+      </manifest>
+    	<!-- Repack and include protobuf -->
+    	<zipgroupfileset dir="${lib.dir}"/>
+    </jar>
+    <jar destfile="jar/Client.jar" basedir="bin">
+      <manifest>
+        <attribute name="Main-Class" value="rmi.Client"/>
+      </manifest>
+    	<!-- Repack and include protobuf -->
+      <zipgroupfileset dir="${lib.dir}"/>
+    </jar>
+  </target>
+
+</project>
+

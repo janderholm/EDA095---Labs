@@ -34,10 +34,12 @@ public class RemoteFunctions implements RemoteInterface{
 		return 	mon.fetch();
 	}
 
-	@Override
-	public Set<String>[] fetchAndSet(Set<String> traversed,
-			Set<String> remaining) throws RemoteException {
-		return mon.fetchAndSet(traversed, remaining);
+	public void set(Set<String> traversed,Set<String> remaining) throws RemoteException {
+		mon.set(traversed, remaining);
+	}
+	
+	public void addUrl(String url) throws RemoteException {
+		mon.addURL(url);
 	}
 
 

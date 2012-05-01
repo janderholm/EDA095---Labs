@@ -1,12 +1,11 @@
 package rmi;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.InputStreamReader;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-
+import java.net.*;
 import crawler.ListMonitor;
 import crawler.Settings;
 import crawler.Starter;
@@ -29,11 +28,13 @@ public class Server {
 		}
 		
 		try {
-			Thread th = null;
-			ListMonitor mon = new ListMonitor(th);
-			th = new Thread(new Starter(mon));
+			
+			ListMonitor mon = new ListMonitor();
+			Thread th = new Thread(new Starter(mon));
 			mon.AddRemainingURL(Settings.START_URL);
 			th.start(); //start the thread.
+			
+			
 			
 			RemoteFunctions obj = new RemoteFunctions(mon);
 			RemoteInterface stub = (RemoteInterface) UnicastRemoteObject
@@ -41,10 +42,10 @@ public class Server {
 
 			// Bind the remote object's stub in the registry
 			Registry registry = LocateRegistry.getRegistry(registrysocket);
-			registry.bind("Remote", stub);
+			registry.bind(rref, stub);
 
+			System.out.println("this address=" + (InetAddress.getLocalHost()).toString() +  ",port=" + rmisocket);
 			System.out.println("Server ready");
-			
 			BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
 
 	        while (true){

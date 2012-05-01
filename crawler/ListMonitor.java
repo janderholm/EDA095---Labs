@@ -2,6 +2,7 @@ package crawler;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -14,7 +15,7 @@ public class ListMonitor {
 	private int progress = 0;
 	private boolean suspend = true;
 
-	public ListMonitor(Thread th) {
+	public ListMonitor() {
 		urn = new HashSet<String>();
 		url = new HashSet<String>();
 		remainingURLs = new LinkedList<String>();
@@ -52,23 +53,14 @@ public class ListMonitor {
 		return (Set<String>[]) (new Set[]{tTraversed,tRemaining});
 	}
 	
-	@SuppressWarnings("unchecked")
-	synchronized public Set<String>[] fetchAndSet(Set<String> traversed, Set<String> remaining) {
+	synchronized public void set(Set<String> traversed, Set<String> remaining) {
 		System.out.println("CHANGE");
-		Set<String> tTraversed = url;
-		Set<String> tRemaining = hashRemainingURLs;
-		long time = System.currentTimeMillis();
-		
 		url = traversed;
 		hashRemainingURLs = remaining;
 		remainingURLs = new LinkedList<String>();
-		remainingURLs.addAll(traversed);
+		remainingURLs.addAll(remaining);
 		double calc = (traversed.size()/(double)Settings.LIMIT)*100;
 		progress = (int) calc;
-		System.out.println(progress);
-		
-		System.out.println(System.currentTimeMillis() - time);
-		return (Set<String>[]) (new Set[]{tTraversed, tRemaining});
 	}
 
 	synchronized public void AddRemainingURL(String s) {
@@ -92,6 +84,16 @@ public class ListMonitor {
 				e.printStackTrace();
 			}
 		}
+		
+		Random rand = new Random();
+		if(rand.nextInt()%3 == 1){
+			System.out.print("\r /");
+		}else if(rand.nextInt()%3 == 2){
+			System.out.print("\r \\");
+		}else{
+			System.out.print("\r |");
+		}
+		
 		
 		if(progress*(Settings.LIMIT/100) < url.size()){
 			System.out.print("\r"+progress + "%  " + url.size());
